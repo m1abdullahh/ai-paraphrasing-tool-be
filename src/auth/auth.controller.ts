@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { SignInDTO, RegisterDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
 import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
@@ -6,8 +14,13 @@ import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from './guards/auth.guard';
+import { ExtendedRequest } from 'src/types';
+import { Public } from 'src/shared/decorators/Public';
 
+@ApiBearerAuth('JWT-auth')
+@UseGuards(AuthGuard)
 @ApiTags('User Authentication')
 @Controller('auth')
 export class AuthController {
@@ -18,6 +31,7 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
+  @Public()
   @ApiOperation({ summary: 'User Signup' })
   @ApiBody({ type: RegisterDTO })
   @Post('register')
@@ -35,6 +49,7 @@ export class AuthController {
     );
   }
 
+  @Public()
   @ApiOperation({ summary: 'User Login' })
   @Post('login')
   async handleLogin(@Body() signInData: SignInDTO) {
@@ -65,6 +80,12 @@ export class AuthController {
       });
     }
     return this.responseMappings.getErrorResponse('Invalid Password.');
+  }
+
+  @ApiOperation({ summary: 'User profile', description: 'Fetch user profile.' })
+  @Get('profile')
+  async handleGetProfile(@Req() req: ExtendedRequest) {
+    return this.responseMappings.getSuccessResponse(req.user);
   }
 
   @Get('google-auth')
