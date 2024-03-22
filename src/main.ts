@@ -4,7 +4,7 @@ import * as dotenv from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 async function bootstrap() {
-  const nodeEnv = 'development';
+  const nodeEnv = process.env.NODE_ENV;
   let envFilePath: string;
   let port = 8080;
   if (nodeEnv === 'development') {
@@ -43,14 +43,15 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, {
     deepScanRoutes: true,
   });
-  SwaggerModule.setup('api', app, document, {
-    customSiteTitle: 'AI Paraphrasing Tool APIs',
-    swaggerOptions: {
-      defaultModelsExpandDepth: -1,
-      defaultModelExpandDepth: -1,
-      docExpansion: 'none',
-    },
-  });
+  if (nodeEnv !== 'production')
+    SwaggerModule.setup('api', app, document, {
+      customSiteTitle: 'AI Paraphrasing Tool APIs',
+      swaggerOptions: {
+        defaultModelsExpandDepth: -1,
+        defaultModelExpandDepth: -1,
+        docExpansion: 'none',
+      },
+    });
   app.use(bodyParser.json({ limit: '50mb' }));
   app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 

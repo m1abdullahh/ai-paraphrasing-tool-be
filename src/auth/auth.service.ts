@@ -51,6 +51,14 @@ export class AuthService {
       .exec();
   }
 
+  async changeCredits(userId: string, change: number): Promise<void> {
+    return await this.userModel.findByIdAndUpdate(userId, {
+      $inc: {
+        promptCredits: change,
+      },
+    });
+  }
+
   getGoogleAuthURL() {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${this.configService.get<string>('GOOGLE_AUTH_CLIENT_ID')}&redirect_uri=${this.configService.get<string>('GOOGLE_AUTH_REDIRECT_URI')}&response_type=code&scope=profile email`;
     return url;
