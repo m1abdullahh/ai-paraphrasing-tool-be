@@ -5,6 +5,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GeneratorModule } from './generator/generator.module';
 import { PromptModule } from './prompt/prompt.module';
+import { FeedbackModule } from './feedback/feedback.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { PromptModule } from './prompt/prompt.module';
     AuthModule,
     GeneratorModule,
     PromptModule,
+    FeedbackModule,
   ],
 })
 export class AppModule {}

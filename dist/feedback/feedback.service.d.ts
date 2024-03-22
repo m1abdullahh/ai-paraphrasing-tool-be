@@ -22,16 +22,12 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import mongoose, { HydratedDocument } from 'mongoose';
-import { User } from 'src/auth/models/User';
-export type PromptDocument = HydratedDocument<Prompt>;
-export declare class Prompt {
-    user: User;
-    prompt: string;
-    completion: string;
+import { Feedback } from './models/Feedback';
+import { Model } from 'mongoose';
+import { AuthService } from 'src/auth/auth.service';
+export declare class FeedbackService {
+    private readonly feedbackModel;
+    private readonly authService;
+    constructor(feedbackModel: Model<Feedback>, authService: AuthService);
+    addFeedback(userId: string, feedback: string, rating: number): Promise<void>;
 }
-export declare const PromptSchema: mongoose.Schema<Prompt, mongoose.Model<Prompt, any, any, any, mongoose.Document<unknown, any, Prompt> & Prompt & {
-    _id: mongoose.Types.ObjectId;
-}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, Prompt, mongoose.Document<unknown, {}, mongoose.FlatRecord<Prompt>> & mongoose.FlatRecord<Prompt> & {
-    _id: mongoose.Types.ObjectId;
-}>;

@@ -6,10 +6,11 @@ const dotenv = require("dotenv");
 const swagger_1 = require("@nestjs/swagger");
 const bodyParser = require("body-parser");
 const common_1 = require("@nestjs/common");
+const types_1 = require("./types");
 async function bootstrap() {
-    const nodeEnv = 'production';
-    const envFilePath = '.env.prod';
-    const port = 8081;
+    const nodeEnv = types_1.ENV.PROD;
+    const envFilePath = types_1.ENV_MAPPINGS[nodeEnv];
+    const port = 8080;
     console.log(`Loading environment variables from ${nodeEnv} environment file: ${envFilePath}`);
     dotenv.config({ path: envFilePath });
     const app = await core_1.NestFactory.create(app_module_1.AppModule);

@@ -14,6 +14,7 @@ const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const generator_module_1 = require("./generator/generator.module");
 const prompt_module_1 = require("./prompt/prompt.module");
+const feedback_module_1 = require("./feedback/feedback.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,6 +41,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             generator_module_1.GeneratorModule,
             prompt_module_1.PromptModule,
+            feedback_module_1.FeedbackModule,
         ],
     })
 ], AppModule);

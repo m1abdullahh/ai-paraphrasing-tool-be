@@ -9,35 +9,35 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.PromptSchema = exports.Prompt = void 0;
+exports.FeedbackSchema = exports.Feedback = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const User_1 = require("../../auth/models/User");
-let Prompt = class Prompt {
+let Feedback = class Feedback {
 };
-exports.Prompt = Prompt;
+exports.Feedback = Feedback;
 __decorate([
     (0, mongoose_1.Prop)({
         type: [
             {
                 type: mongoose_2.default.Schema.Types.ObjectId,
-                ref: 'Users',
+                ref: User_1.User.name,
             },
         ],
     }),
     __metadata("design:type", User_1.User)
-], Prompt.prototype, "user", void 0);
+], Feedback.prototype, "user", void 0);
 __decorate([
     (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
-], Prompt.prototype, "prompt", void 0);
+], Feedback.prototype, "feedback", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: String, required: true }),
-    __metadata("design:type", String)
-], Prompt.prototype, "completion", void 0);
-exports.Prompt = Prompt = __decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: true }),
+    __metadata("design:type", Number)
+], Feedback.prototype, "rating", void 0);
+exports.Feedback = Feedback = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
-], Prompt);
-exports.PromptSchema = mongoose_1.SchemaFactory.createForClass(Prompt);
-exports.PromptSchema.index({ user: 1 });
-//# sourceMappingURL=prompt.js.map
+], Feedback);
+exports.FeedbackSchema = mongoose_1.SchemaFactory.createForClass(Feedback);
+exports.FeedbackSchema.index({ user: 1 });
+//# sourceMappingURL=Feedback.js.map

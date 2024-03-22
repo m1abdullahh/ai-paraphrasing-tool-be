@@ -40,7 +40,7 @@ let GeneratorService = class GeneratorService {
         });
         const wordCount = (0, utils_1.countWords)(returnText);
         const generationCost = wordCount / types_1.WORDS_PER_CREDIT;
-        this.authService.changeCredits(userId, -generationCost);
+        this.authService.changeCredits(userId, ~~-generationCost);
         return returnText;
     }
 };

@@ -34,7 +34,7 @@ export class GeneratorService {
     const wordCount = countWords(returnText);
     const generationCost = wordCount / WORDS_PER_CREDIT;
 
-    this.authService.changeCredits(userId, -generationCost);
+    this.authService.changeCredits(userId, ~~-generationCost);
     return returnText;
   }
 }

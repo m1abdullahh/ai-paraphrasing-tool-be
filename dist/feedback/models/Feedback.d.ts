@@ -24,14 +24,14 @@
 /// <reference types="mongoose/types/inferschematype" />
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from 'src/auth/models/User';
-export type PromptDocument = HydratedDocument<Prompt>;
-export declare class Prompt {
+export type FeedbackDocument = HydratedDocument<Feedback>;
+export declare class Feedback {
     user: User;
-    prompt: string;
-    completion: string;
+    feedback: string;
+    rating: number;
 }
-export declare const PromptSchema: mongoose.Schema<Prompt, mongoose.Model<Prompt, any, any, any, mongoose.Document<unknown, any, Prompt> & Prompt & {
+export declare const FeedbackSchema: mongoose.Schema<Feedback, mongoose.Model<Feedback, any, any, any, mongoose.Document<unknown, any, Feedback> & Feedback & {
     _id: mongoose.Types.ObjectId;
-}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, Prompt, mongoose.Document<unknown, {}, mongoose.FlatRecord<Prompt>> & mongoose.FlatRecord<Prompt> & {
+}, any>, {}, {}, {}, {}, mongoose.DefaultSchemaOptions, Feedback, mongoose.Document<unknown, {}, mongoose.FlatRecord<Feedback>> & mongoose.FlatRecord<Feedback> & {
     _id: mongoose.Types.ObjectId;
 }>;

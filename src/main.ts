@@ -4,10 +4,11 @@ import * as dotenv from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
 import { ValidationPipe } from '@nestjs/common';
+import { ENV, ENV_MAPPINGS } from './types';
 async function bootstrap() {
-  const nodeEnv = 'production';
-  const envFilePath = '.env.prod';
-  const port = 8081;
+  const nodeEnv: ENV = ENV.PROD;
+  const envFilePath = ENV_MAPPINGS[nodeEnv];
+  const port = 8080;
 
   console.log(
     `Loading environment variables from ${nodeEnv} environment file: ${envFilePath}`,
@@ -37,7 +38,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config, {
     deepScanRoutes: true,
   });
-  // if (nodeEnv !== 'production')
+  // if (nodeEnv !== ENV.PROD)
   SwaggerModule.setup('api', app, document, {
     customSiteTitle: 'AI Paraphrasing Tool APIs',
     swaggerOptions: {

@@ -2,24 +2,24 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from 'src/auth/models/User';
 
-export type PromptDocument = HydratedDocument<Prompt>;
+export type FeedbackDocument = HydratedDocument<Feedback>;
 
 @Schema({ timestamps: true })
-export class Prompt {
+export class Feedback {
   @Prop({
     type: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Users',
+        ref: User.name,
       },
     ],
   })
   user: User;
   @Prop({ type: String, required: true })
-  prompt: string;
-  @Prop({ type: String, required: true })
-  completion: string;
+  feedback: string;
+  @Prop({ type: Number, required: true })
+  rating: number;
 }
 
-export const PromptSchema = SchemaFactory.createForClass(Prompt);
-PromptSchema.index({ user: 1 });
+export const FeedbackSchema = SchemaFactory.createForClass(Feedback);
+FeedbackSchema.index({ user: 1 });
