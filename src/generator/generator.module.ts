@@ -5,6 +5,9 @@ import { AuthService } from 'src/auth/auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/auth/models/User';
 import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
+import { PromptModule } from 'src/prompt/prompt.module';
+import { PromptService } from 'src/prompt/prompt.service';
+import { Prompt, PromptSchema } from 'src/prompt/models/prompt';
 
 @Module({
   imports: [
@@ -14,9 +17,15 @@ import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
         schema: UserSchema,
         collection: 'Users',
       },
+      {
+        name: Prompt.name,
+        schema: PromptSchema,
+        collection: 'Prompts',
+      },
     ]),
+    PromptModule,
   ],
-  providers: [GeneratorService, AuthService, ResponseMappings],
+  providers: [GeneratorService, AuthService, ResponseMappings, PromptService],
   controllers: [GeneratorController],
 })
 export class GeneratorModule {}

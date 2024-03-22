@@ -19,6 +19,8 @@ export class User {
   active: boolean;
   @Prop({ type: Boolean, required: false, default: false })
   emailVerified: boolean;
+  @Prop({ type: Number, required: true, default: 150 })
+  promptCredits: number;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

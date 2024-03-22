@@ -1,7 +1,9 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
+  NotFoundException,
   Post,
   Req,
   Res,
@@ -41,12 +43,10 @@ export class AuthController {
       email: signUpData.email,
     });
     if (!availability.available) {
-      return this.responseMappings.getErrorResponse(availability.error);
+      throw new BadRequestException(availability.error);
     }
     await this.authService.createUser(signUpData);
-    return this.responseMappings.getSuccessResponse(
-      'User created, you can login now.',
-    );
+    return { message: 'User created, you can sign in now.' };
   }
 
   @Public()
@@ -55,9 +55,7 @@ export class AuthController {
   async handleLogin(@Body() signInData: SignInDTO) {
     const user = await this.authService.findOne(signInData.email);
     if (!user) {
-      return this.responseMappings.getErrorResponse(
-        'No account found with this email.',
-      );
+      throw new NotFoundException('No account found with this email.');
     }
     const passwordMatch = compareSync(signInData.password, user.password);
     const expiry = this.configService.get<string>('JWT_EXPIRES_IN');
@@ -73,19 +71,19 @@ export class AuthController {
           secret,
         },
       );
-      return this.responseMappings.getSuccessResponse({
+      return {
         accessToken: token,
         expiresIn: expiry,
         user: user,
-      });
+      };
     }
-    return this.responseMappings.getErrorResponse('Invalid Password.');
+    throw new BadRequestException('Invalid Password.');
   }
 
   @ApiOperation({ summary: 'User profile', description: 'Fetch user profile.' })
   @Get('profile')
   async handleGetProfile(@Req() req: ExtendedRequest) {
-    return this.responseMappings.getSuccessResponse(req.user);
+    return req.user;
   }
 
   @Get('google-auth')

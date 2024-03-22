@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { GeneratorModule } from './generator/generator.module';
+import { PromptModule } from './prompt/prompt.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { GeneratorModule } from './generator/generator.module';
     }),
     AuthModule,
     GeneratorModule,
+    PromptModule,
   ],
 })
 export class AppModule {}
