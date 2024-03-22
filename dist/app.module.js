@@ -15,6 +15,8 @@ const mongoose_1 = require("@nestjs/mongoose");
 const generator_module_1 = require("./generator/generator.module");
 const prompt_module_1 = require("./prompt/prompt.module");
 const feedback_module_1 = require("./feedback/feedback.module");
+const mailer_1 = require("@nestjs-modules/mailer");
+const main_1 = require("./main");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -22,7 +24,7 @@ exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
             config_1.ConfigModule.forRoot({
-                envFilePath: '.env',
+                envFilePath: main_1.envFilePath,
                 isGlobal: true,
             }),
             jwt_1.JwtModule.register({
@@ -36,6 +38,23 @@ exports.AppModule = AppModule = __decorate([
                 inject: [config_1.ConfigService],
                 useFactory: (configService) => ({
                     uri: configService.get('MONGODB_URI'),
+                }),
+            }),
+            mailer_1.MailerModule.forRootAsync({
+                inject: [config_1.ConfigService],
+                useFactory: (configService) => ({
+                    transport: {
+                        host: configService.get('GMAIL_SMTP_HOST'),
+                        port: 587,
+                        ssl: false,
+                        auth: {
+                            user: configService.get('GMAIL_MAIL_USER'),
+                            pass: configService.get('GMAIL_MAIL_PASS'),
+                        },
+                        defaults: {
+                            from: `"${configService.get('MAIL_DEFAULT_NAME')}" <${configService.get('MAIL_DEFAULT')}>`,
+                        },
+                    },
                 }),
             }),
             auth_module_1.AuthModule,

@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const Feedback_1 = require("./models/Feedback");
 const mongoose_2 = require("mongoose");
-const auth_service_1 = require("../auth/auth.service");
+const auth_service_1 = require("../auth/services/auth.service");
 let FeedbackService = class FeedbackService {
     constructor(feedbackModel, authService) {
         this.feedbackModel = feedbackModel;

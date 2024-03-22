@@ -7,7 +7,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { IS_PUBLIC_KEY } from '../../shared/decorators/Public';
 import { Reflector } from '@nestjs/core';
-import { AuthService } from '../auth.service';
+import { AuthService } from '../services/auth.service';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -46,7 +46,12 @@ export class AuthGuard implements CanActivate {
         }
         if (!user.active) {
           throw new UnauthorizedException(
-            "You're not active by administrator,\n Contact Administrator for Account Activation",
+            'Your account is not active,\n Contact Administrator for Account Activation.',
+          );
+        }
+        if (!user.emailVerified) {
+          throw new UnauthorizedException(
+            'Your email address is not verfied. Please check your inbox. ',
           );
         }
         request['user'] = user;

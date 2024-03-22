@@ -17,7 +17,7 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const mongoose_1 = require("@nestjs/mongoose");
 const bcrypt_1 = require("bcrypt");
-const User_1 = require("./models/User");
+const User_1 = require("../models/User");
 const mongoose_2 = require("mongoose");
 let AuthService = class AuthService {
     constructor(userModel, configService) {
@@ -36,7 +36,7 @@ let AuthService = class AuthService {
     async createUser(data) {
         const passwordHash = (0, bcrypt_1.hashSync)(data.password, 10);
         try {
-            await this.userModel.create({
+            return await this.userModel.create({
                 ...data,
                 fullName: `${data.firstName} ${data.lastName}`,
                 password: passwordHash,
@@ -64,6 +64,11 @@ let AuthService = class AuthService {
     getGoogleAuthURL() {
         const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${this.configService.get('GOOGLE_AUTH_CLIENT_ID')}&redirect_uri=${this.configService.get('GOOGLE_AUTH_REDIRECT_URI')}&response_type=code&scope=profile email`;
         return url;
+    }
+    async setEmailVerifiedStatus(id, status) {
+        await this.userModel.findByIdAndUpdate(id, {
+            emailVerified: status,
+        });
     }
 };
 exports.AuthService = AuthService;

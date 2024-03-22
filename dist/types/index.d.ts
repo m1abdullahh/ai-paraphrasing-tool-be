@@ -8,3 +8,8 @@ export declare enum ENV {
     DEV = "DEV"
 }
 export declare const ENV_MAPPINGS: Record<ENV, string>;
+export declare enum EmailType {
+    VERIFICATION = "verification",
+    ACTIVATION = "activation",
+    PASSWORD_RESET = "password-reset"
+}

@@ -24,7 +24,7 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { Feedback } from './models/Feedback';
 import { Model } from 'mongoose';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
 export declare class FeedbackService {
     private readonly feedbackModel;
     private readonly authService;

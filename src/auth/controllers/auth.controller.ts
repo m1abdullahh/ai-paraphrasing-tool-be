@@ -5,20 +5,30 @@ import {
   Get,
   NotFoundException,
   Post,
+  Query,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { SignInDTO, RegisterDTO } from './dto/auth.dto';
-import { AuthService } from './auth.service';
+import { SignInDTO, RegisterDTO } from '../dto/auth.dto';
+import { AuthService } from '../services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
-import { ApiBearerAuth, ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuthGuard } from './guards/auth.guard';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { AuthGuard } from '../guards/auth.guard';
 import { ExtendedRequest } from 'src/types';
 import { Public } from 'src/shared/decorators/Public';
+import { EmailService } from '../services/email.service';
 
 @ApiBearerAuth('JWT-auth')
 @UseGuards(AuthGuard)
@@ -29,6 +39,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
+    private readonly emailService: EmailService,
   ) {}
 
   @Public()
@@ -43,8 +54,9 @@ export class AuthController {
     if (!availability.available) {
       throw new BadRequestException(availability.error);
     }
-    await this.authService.createUser(signUpData);
-    return { message: 'User created, you can sign in now.' };
+    const createdUser = await this.authService.createUser(signUpData);
+    await this.emailService.sendVerificationEmail(createdUser);
+    return { message: 'User created, check your email inbox.' };
   }
 
   @Public()
@@ -69,6 +81,16 @@ export class AuthController {
           secret,
         },
       );
+      if (!user.active) {
+        throw new UnauthorizedException(
+          'Your account is not active,\n contact Administrator for account activation.',
+        );
+      }
+      if (!user.emailVerified) {
+        throw new UnauthorizedException(
+          'Your email address is not verfied. Please check your inbox. ',
+        );
+      }
       return {
         accessToken: token,
         expiresIn: expiry,
@@ -87,5 +109,23 @@ export class AuthController {
   @Get('google-auth')
   handleGetAuthUrl(@Res() res: Response) {
     return res.redirect(this.authService.getGoogleAuthURL());
+  }
+
+  @ApiOperation({ summary: 'Callback URL for email verification.' })
+  @ApiResponse({ status: 200, description: 'Email Verified Successfully.' })
+  @ApiResponse({ status: 400, description: 'Code Is Invalid.' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error.' })
+  @ApiQuery({ name: 'code', type: String, required: true })
+  @Public()
+  @Get('confirm-code')
+  async confirmCode(@Query('code') code: string, @Res() res: Response) {
+    const userId = await this.emailService.verifyCode(code);
+    if (userId) {
+      await this.authService.setEmailVerifiedStatus(userId, true);
+      return res.redirect(
+        `${this.configService.get<string>('CLIENT_URL')}/login?emailVerified=true`,
+      );
+    }
+    throw new BadRequestException('Invalid code.');
   }
 }

@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.envFilePath = void 0;
 const core_1 = require("@nestjs/core");
 const app_module_1 = require("./app.module");
 const dotenv = require("dotenv");
@@ -7,12 +8,13 @@ const swagger_1 = require("@nestjs/swagger");
 const bodyParser = require("body-parser");
 const common_1 = require("@nestjs/common");
 const types_1 = require("./types");
+exports.envFilePath = '.env.dev';
 async function bootstrap() {
-    const nodeEnv = types_1.ENV.PROD;
-    const envFilePath = types_1.ENV_MAPPINGS[nodeEnv];
+    const nodeEnv = types_1.ENV.DEV;
+    exports.envFilePath = types_1.ENV_MAPPINGS[nodeEnv];
     const port = 8080;
-    console.log(`Loading environment variables from ${nodeEnv} environment file: ${envFilePath}`);
-    dotenv.config({ path: envFilePath });
+    console.log(`Loading environment variables from ${nodeEnv} environment file: ${exports.envFilePath}`);
+    dotenv.config({ path: exports.envFilePath });
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.enableCors();
     app.useGlobalPipes(new common_1.ValidationPipe());

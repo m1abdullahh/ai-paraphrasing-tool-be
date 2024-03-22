@@ -15,3 +15,9 @@ export const ENV_MAPPINGS: Record<ENV, string> = {
   DEV: '.env.dev',
   PROD: '.env.prod',
 };
+
+export enum EmailType {
+  VERIFICATION = 'verification',
+  ACTIVATION = 'activation',
+  PASSWORD_RESET = 'password-reset',
+}

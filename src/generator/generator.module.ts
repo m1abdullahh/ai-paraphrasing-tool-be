@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { GeneratorService } from './generator.service';
 import { GeneratorController } from './generator.controller';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from 'src/auth/models/User';
 import { ResponseMappings } from 'src/shared/utils/ResponseMappings';

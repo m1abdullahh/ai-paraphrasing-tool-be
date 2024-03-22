@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { AuthService } from './auth.service';
+import { AuthController } from './controllers/auth.controller';
+import { AuthService } from './services/auth.service';
 import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './models/User';
+import { EmailService } from './services/email.service';
 
 @Module({
   imports: [
@@ -24,7 +25,6 @@ import { User, UserSchema } from './models/User';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, ResponseMappings],
-  exports: [AuthService],
+  providers: [AuthService, ResponseMappings, EmailService],
 })
 export class AuthModule {}

@@ -14,7 +14,7 @@ const common_1 = require("@nestjs/common");
 const jwt_1 = require("@nestjs/jwt");
 const Public_1 = require("../../shared/decorators/Public");
 const core_1 = require("@nestjs/core");
-const auth_service_1 = require("../auth.service");
+const auth_service_1 = require("../services/auth.service");
 const config_1 = require("@nestjs/config");
 let AuthGuard = class AuthGuard {
     constructor(jwtService, reflector, authService, configService) {
@@ -46,7 +46,10 @@ let AuthGuard = class AuthGuard {
                     throw new common_1.UnauthorizedException('Invalid token');
                 }
                 if (!user.active) {
-                    throw new common_1.UnauthorizedException("You're not active by administrator,\n Contact Administrator for Account Activation");
+                    throw new common_1.UnauthorizedException('Your account is not active,\n Contact Administrator for Account Activation.');
+                }
+                if (!user.emailVerified) {
+                    throw new common_1.UnauthorizedException('Your email address is not verfied. Please check your inbox. ');
                 }
                 request['user'] = user;
             }

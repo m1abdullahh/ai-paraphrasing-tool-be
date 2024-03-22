@@ -21,31 +21,27 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
-/// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { SignInDTO, RegisterDTO } from './dto/auth.dto';
-import { AuthService } from './auth.service';
-import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { Response } from 'express';
-import { ExtendedRequest } from 'src/types';
-export declare class AuthController {
-    private readonly authService;
-    private readonly jwtService;
+import { RegisterDTO } from '../dto/auth.dto';
+import { User, UserDocument } from '../models/User';
+import { Model } from 'mongoose';
+export declare class AuthService {
+    private readonly userModel;
     private readonly configService;
-    constructor(authService: AuthService, jwtService: JwtService, configService: ConfigService);
-    handleRegister(signUpData: RegisterDTO): Promise<{
-        message: string;
+    constructor(userModel: Model<User>, configService: ConfigService);
+    checkAvailability({ username, email, }: {
+        username: string;
+        email: string;
+    }): Promise<{
+        available: boolean;
+        error?: string;
     }>;
-    handleLogin(signInData: SignInDTO): Promise<{
-        accessToken: string;
-        expiresIn: string;
-        user: import("mongoose").Document<unknown, {}, import("src/auth/models/User").User> & import("src/auth/models/User").User & {
-            _id: import("mongoose").Types.ObjectId;
-        };
-    }>;
-    handleGetProfile(req: ExtendedRequest): Promise<import("mongoose").Document<unknown, {}, import("src/auth/models/User").User> & import("src/auth/models/User").User & {
+    createUser(data: RegisterDTO): Promise<import("mongoose").Document<unknown, {}, User> & User & {
         _id: import("mongoose").Types.ObjectId;
     }>;
-    handleGetAuthUrl(res: Response): void;
+    findOne(email: string): Promise<UserDocument>;
+    changeCredits(userId: string, change: number): Promise<void>;
+    getGoogleAuthURL(): string;
+    setEmailVerifiedStatus(id: string, status: boolean): Promise<void>;
 }

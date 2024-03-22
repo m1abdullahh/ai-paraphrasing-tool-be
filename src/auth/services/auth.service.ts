@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectModel } from '@nestjs/mongoose';
 import { hashSync } from 'bcrypt';
-import { RegisterDTO } from './dto/auth.dto';
-import { User, UserDocument } from './models/User';
+import { RegisterDTO } from '../dto/auth.dto';
+import { User, UserDocument } from '../models/User';
 import { Model } from 'mongoose';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class AuthService {
   async createUser(data: RegisterDTO) {
     const passwordHash = hashSync(data.password, 10);
     try {
-      await this.userModel.create({
+      return await this.userModel.create({
         ...data,
         fullName: `${data.firstName} ${data.lastName}`,
         password: passwordHash,
@@ -62,5 +62,11 @@ export class AuthService {
   getGoogleAuthURL() {
     const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${this.configService.get<string>('GOOGLE_AUTH_CLIENT_ID')}&redirect_uri=${this.configService.get<string>('GOOGLE_AUTH_REDIRECT_URI')}&response_type=code&scope=profile email`;
     return url;
+  }
+
+  async setEmailVerifiedStatus(id: string, status: boolean) {
+    await this.userModel.findByIdAndUpdate(id, {
+      emailVerified: status,
+    });
   }
 }

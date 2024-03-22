@@ -1,7 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { AuthService } from 'src/auth/auth.service';
+import { AuthService } from 'src/auth/services/auth.service';
 import { PromptService } from 'src/prompt/prompt.service';
 import { countWords } from 'src/shared/utils';
 import { WORDS_PER_CREDIT } from 'src/types';

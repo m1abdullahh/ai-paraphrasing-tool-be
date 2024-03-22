@@ -14,19 +14,21 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AuthController = void 0;
 const common_1 = require("@nestjs/common");
-const auth_dto_1 = require("./dto/auth.dto");
-const auth_service_1 = require("./auth.service");
+const auth_dto_1 = require("../dto/auth.dto");
+const auth_service_1 = require("../services/auth.service");
 const jwt_1 = require("@nestjs/jwt");
 const bcrypt_1 = require("bcrypt");
 const config_1 = require("@nestjs/config");
 const swagger_1 = require("@nestjs/swagger");
-const auth_guard_1 = require("./guards/auth.guard");
-const Public_1 = require("../shared/decorators/Public");
+const auth_guard_1 = require("../guards/auth.guard");
+const Public_1 = require("../../shared/decorators/Public");
+const email_service_1 = require("../services/email.service");
 let AuthController = class AuthController {
-    constructor(authService, jwtService, configService) {
+    constructor(authService, jwtService, configService, emailService) {
         this.authService = authService;
         this.jwtService = jwtService;
         this.configService = configService;
+        this.emailService = emailService;
     }
     async handleRegister(signUpData) {
         const availability = await this.authService.checkAvailability({
@@ -36,8 +38,9 @@ let AuthController = class AuthController {
         if (!availability.available) {
             throw new common_1.BadRequestException(availability.error);
         }
-        await this.authService.createUser(signUpData);
-        return { message: 'User created, you can sign in now.' };
+        const createdUser = await this.authService.createUser(signUpData);
+        await this.emailService.sendVerificationEmail(createdUser);
+        return { message: 'User created, check your email inbox.' };
     }
     async handleLogin(signInData) {
         const user = await this.authService.findOne(signInData.email);
@@ -55,6 +58,12 @@ let AuthController = class AuthController {
                 expiresIn: expiry,
                 secret,
             });
+            if (!user.active) {
+                throw new common_1.UnauthorizedException('Your account is not active,\n contact Administrator for account activation.');
+            }
+            if (!user.emailVerified) {
+                throw new common_1.UnauthorizedException('Your email address is not verfied. Please check your inbox. ');
+            }
             return {
                 accessToken: token,
                 expiresIn: expiry,
@@ -68,6 +77,14 @@ let AuthController = class AuthController {
     }
     handleGetAuthUrl(res) {
         return res.redirect(this.authService.getGoogleAuthURL());
+    }
+    async confirmCode(code, res) {
+        const userId = await this.emailService.verifyCode(code);
+        if (userId) {
+            await this.authService.setEmailVerifiedStatus(userId, true);
+            return res.redirect(`${this.configService.get('CLIENT_URL')}/login?emailVerified=true`);
+        }
+        throw new common_1.BadRequestException('Invalid code.');
     }
 };
 exports.AuthController = AuthController;
@@ -105,6 +122,20 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], AuthController.prototype, "handleGetAuthUrl", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({ summary: 'Callback URL for email verification.' }),
+    (0, swagger_1.ApiResponse)({ status: 200, description: 'Email Verified Successfully.' }),
+    (0, swagger_1.ApiResponse)({ status: 400, description: 'Code Is Invalid.' }),
+    (0, swagger_1.ApiResponse)({ status: 500, description: 'Internal Server Error.' }),
+    (0, swagger_1.ApiQuery)({ name: 'code', type: String, required: true }),
+    (0, Public_1.Public)(),
+    (0, common_1.Get)('confirm-code'),
+    __param(0, (0, common_1.Query)('code')),
+    __param(1, (0, common_1.Res)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "confirmCode", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
@@ -112,6 +143,7 @@ exports.AuthController = AuthController = __decorate([
     (0, common_1.Controller)('auth'),
     __metadata("design:paramtypes", [auth_service_1.AuthService,
         jwt_1.JwtService,
-        config_1.ConfigService])
+        config_1.ConfigService,
+        email_service_1.EmailService])
 ], AuthController);
 //# sourceMappingURL=auth.controller.js.map

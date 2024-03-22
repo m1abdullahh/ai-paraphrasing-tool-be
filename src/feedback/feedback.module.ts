@@ -4,6 +4,8 @@ import { FeedbackService } from './feedback.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Feedback, FeedbackSchema } from './models/Feedback';
 import { AuthModule } from 'src/auth/auth.module';
+import { AuthService } from 'src/auth/services/auth.service';
+import { User, UserSchema } from 'src/auth/models/User';
 
 @Module({
   imports: [
@@ -13,10 +15,15 @@ import { AuthModule } from 'src/auth/auth.module';
         schema: FeedbackSchema,
         collection: 'Feedbacks',
       },
+      {
+        name: User.name,
+        schema: UserSchema,
+        collection: 'Users',
+      },
     ]),
     AuthModule,
   ],
   controllers: [FeedbackController],
-  providers: [FeedbackService],
+  providers: [FeedbackService, AuthService],
 })
 export class FeedbackModule {}
