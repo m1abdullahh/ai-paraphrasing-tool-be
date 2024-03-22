@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { SignInDTO, RegisterDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { ConfigService } from '@nestjs/config';
@@ -28,7 +27,6 @@ import { Public } from 'src/shared/decorators/Public';
 export class AuthController {
   constructor(
     private readonly authService: AuthService,
-    private readonly responseMappings: ResponseMappings,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
   ) {}

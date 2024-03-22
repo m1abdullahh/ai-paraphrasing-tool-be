@@ -25,17 +25,15 @@
 /// <reference types="mongoose/types/inferschematype" />
 import { SignInDTO, RegisterDTO } from './dto/auth.dto';
 import { AuthService } from './auth.service';
-import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { Response } from 'express';
 import { ExtendedRequest } from 'src/types';
 export declare class AuthController {
     private readonly authService;
-    private readonly responseMappings;
     private readonly jwtService;
     private readonly configService;
-    constructor(authService: AuthService, responseMappings: ResponseMappings, jwtService: JwtService, configService: ConfigService);
+    constructor(authService: AuthService, jwtService: JwtService, configService: ConfigService);
     handleRegister(signUpData: RegisterDTO): Promise<{
         message: string;
     }>;

@@ -3,18 +3,11 @@ import { AppModule } from './app.module';
 import * as dotenv from 'dotenv';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import * as bodyParser from 'body-parser';
+import { ValidationPipe } from '@nestjs/common';
 async function bootstrap() {
   const nodeEnv = 'production';
   const envFilePath = '.env.prod';
-  const port = 8080;
-  // if (nodeEnv === 'development') {
-  //   envFilePath = '.env.dev';
-  //   port = 3001;
-  // } else if (nodeEnv === 'staging') {
-  //   envFilePath = '.env.staging';
-  // } else if (nodeEnv == 'production') {
-  //   envFilePath = '.env.prod';
-  // }
+  const port = 8081;
 
   console.log(
     `Loading environment variables from ${nodeEnv} environment file: ${envFilePath}`,
@@ -23,6 +16,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule);
   app.enableCors();
+  app.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('AI Paraphrasing Tool')
     .setDescription('AI Paraphrasing Tool API description.')
