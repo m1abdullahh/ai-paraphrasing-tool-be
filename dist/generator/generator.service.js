@@ -26,7 +26,7 @@ let GeneratorService = class GeneratorService {
             apiKey: this.configService.get('ANTHROPY_KEY'),
         });
     }
-    async getCompletion(content, userId) {
+    async getCompletion(content, userId, originalPrompt) {
         const completion = await this.anthropicAi.messages.create({
             max_tokens: 1024,
             messages: [{ content, role: 'user' }],
@@ -34,7 +34,7 @@ let GeneratorService = class GeneratorService {
         });
         const returnText = completion.content[0].text;
         this.promptService.addPrompt({
-            prompt: content,
+            prompt: originalPrompt,
             completion: returnText,
             user: userId,
         });

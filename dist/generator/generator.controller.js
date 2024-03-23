@@ -32,7 +32,7 @@ let GeneratorController = class GeneratorController {
         try {
             const { jobDescription, name, experience, additionalPrompt } = prompt;
             const AIPrompt = (0, utils_1.generateProposalPrompt)(jobDescription, name, experience, additionalPrompt);
-            const completion = await this.generatorService.getCompletion(AIPrompt, req.user.id);
+            const completion = await this.generatorService.getCompletion(AIPrompt, req.user.id, jobDescription);
             return this.responseMappings.getSuccessResponse(completion);
         }
         catch (e) {

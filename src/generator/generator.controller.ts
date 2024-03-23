@@ -47,6 +47,7 @@ export class GeneratorController {
       const completion = await this.generatorService.getCompletion(
         AIPrompt,
         req.user.id,
+        jobDescription,
       );
       return this.responseMappings.getSuccessResponse(completion);
     } catch (e) {

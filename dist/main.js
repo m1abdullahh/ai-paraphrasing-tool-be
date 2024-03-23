@@ -34,14 +34,15 @@ async function bootstrap() {
     const document = swagger_1.SwaggerModule.createDocument(app, config, {
         deepScanRoutes: true,
     });
-    swagger_1.SwaggerModule.setup('api', app, document, {
-        customSiteTitle: 'AI Paraphrasing Tool APIs',
-        swaggerOptions: {
-            defaultModelsExpandDepth: -1,
-            defaultModelExpandDepth: -1,
-            docExpansion: 'none',
-        },
-    });
+    if (nodeEnv !== types_1.ENV.PROD)
+        swagger_1.SwaggerModule.setup('api', app, document, {
+            customSiteTitle: 'AI Paraphrasing Tool APIs',
+            swaggerOptions: {
+                defaultModelsExpandDepth: -1,
+                defaultModelExpandDepth: -1,
+                docExpansion: 'none',
+            },
+        });
     app.use(bodyParser.json({ limit: '50mb' }));
     app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
     await app.listen(port);

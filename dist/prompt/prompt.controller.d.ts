@@ -21,15 +21,14 @@
 /// <reference types="mongoose/types/utility" />
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
+/// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { Prompt } from './models/prompt';
-import { Model } from 'mongoose';
-import { AddPromptDTO } from './dto/prompt';
-export declare class PromptService {
-    private readonly promptModel;
-    constructor(promptModel: Model<Prompt>);
-    addPrompt(data: AddPromptDTO): Promise<void>;
-    getPromptsByUserId(userId: string): Promise<(import("mongoose").Document<unknown, {}, Prompt> & Prompt & {
+import { ExtendedRequest } from 'src/types';
+import { PromptService } from './prompt.service';
+export declare class PromptController {
+    private readonly promptService;
+    constructor(promptService: PromptService);
+    getUserPrompts(req: ExtendedRequest): Promise<(import("mongoose").Document<unknown, {}, import("src/prompt/models/prompt").Prompt> & import("src/prompt/models/prompt").Prompt & {
         _id: import("mongoose").Types.ObjectId;
     })[]>;
 }

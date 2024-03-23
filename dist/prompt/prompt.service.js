@@ -33,6 +33,18 @@ let PromptService = class PromptService {
             throw new common_1.InternalServerErrorException(e.message || 'Something went wrong.');
         }
     }
+    async getPromptsByUserId(userId) {
+        try {
+            return await this.promptModel
+                .find({ user: userId })
+                .sort({ _id: -1 })
+                .select('-__v -user -updatedAt')
+                .exec();
+        }
+        catch (e) {
+            throw new common_1.InternalServerErrorException(e.message || 'Something went wrong.');
+        }
+    }
 };
 exports.PromptService = PromptService;
 exports.PromptService = PromptService = __decorate([

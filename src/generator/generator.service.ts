@@ -19,7 +19,7 @@ export class GeneratorService {
     });
   }
 
-  async getCompletion(content: string, userId: string) {
+  async getCompletion(content: string, userId: string, originalPrompt: string) {
     const completion = await this.anthropicAi.messages.create({
       max_tokens: 1024,
       messages: [{ content, role: 'user' }],
@@ -27,7 +27,7 @@ export class GeneratorService {
     });
     const returnText = completion.content[0].text;
     this.promptService.addPrompt({
-      prompt: content,
+      prompt: originalPrompt,
       completion: returnText,
       user: userId,
     });

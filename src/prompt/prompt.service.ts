@@ -23,4 +23,18 @@ export class PromptService {
       );
     }
   }
+
+  async getPromptsByUserId(userId: string) {
+    try {
+      return await this.promptModel
+        .find({ user: userId })
+        .sort({ _id: -1 })
+        .select('-__v -user -updatedAt')
+        .exec();
+    } catch (e) {
+      throw new InternalServerErrorException(
+        e.message || 'Something went wrong.',
+      );
+    }
+  }
 }

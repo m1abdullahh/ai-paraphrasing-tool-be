@@ -7,5 +7,5 @@ export declare class GeneratorService {
     private readonly authService;
     private anthropicAi;
     constructor(configService: ConfigService, promptService: PromptService, authService: AuthService);
-    getCompletion(content: string, userId: string): Promise<string>;
+    getCompletion(content: string, userId: string, originalPrompt: string): Promise<string>;
 }

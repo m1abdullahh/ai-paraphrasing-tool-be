@@ -11,6 +11,10 @@ const common_1 = require("@nestjs/common");
 const prompt_service_1 = require("./prompt.service");
 const mongoose_1 = require("@nestjs/mongoose");
 const prompt_1 = require("./models/prompt");
+const prompt_controller_1 = require("./prompt.controller");
+const auth_service_1 = require("../auth/services/auth.service");
+const auth_module_1 = require("../auth/auth.module");
+const User_1 = require("../auth/models/User");
 let PromptModule = class PromptModule {
 };
 exports.PromptModule = PromptModule;
@@ -19,9 +23,12 @@ exports.PromptModule = PromptModule = __decorate([
         imports: [
             mongoose_1.MongooseModule.forFeature([
                 { name: prompt_1.Prompt.name, schema: prompt_1.PromptSchema, collection: 'Prompts' },
+                { name: User_1.User.name, schema: User_1.UserSchema, collection: 'Users' },
             ]),
+            auth_module_1.AuthModule,
         ],
-        providers: [prompt_service_1.PromptService],
+        controllers: [prompt_controller_1.PromptController],
+        providers: [prompt_service_1.PromptService, auth_service_1.AuthService],
     })
 ], PromptModule);
 //# sourceMappingURL=prompt.module.js.map
