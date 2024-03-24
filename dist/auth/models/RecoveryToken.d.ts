@@ -22,24 +22,21 @@
 /// <reference types="mongoose/types/validation" />
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose/types/inferschematype" />
-import { MailerService } from '@nestjs-modules/mailer';
-import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
-import { UserDocument } from 'src/auth/models/User';
-import { RecoveryToken } from '../models/RecoveryToken';
-import { Model } from 'mongoose';
-export declare class EmailService {
-    private readonly mailerService;
-    private readonly configService;
-    private readonly JWTService;
-    private readonly recoveryTokenModel;
-    constructor(mailerService: MailerService, configService: ConfigService, JWTService: JwtService, recoveryTokenModel: Model<RecoveryToken>);
-    sendVerificationEmail(user: UserDocument): Promise<boolean>;
-    verifyCode(code: string): Promise<string | false>;
-    sendAccountRecoveryEmail(email: string, name: string): Promise<void>;
-    confirmRecoveryCode(email: string, token: string): Promise<{
-        match: boolean;
-        code?: string;
-    }>;
-    expireRecoveryCode(email: string, code: string): Promise<void>;
+import { HydratedDocument } from 'mongoose';
+export type RecoveryTokenDocument = HydratedDocument<RecoveryToken>;
+export declare enum TokenStatus {
+    FRESH = "FRESH",
+    CODE_GENERATED = "CODE_GENERATED",
+    EXPIRED = "EXPIRED"
 }
+export declare class RecoveryToken {
+    token: string;
+    email: string;
+    code: string;
+    status: TokenStatus;
+}
+export declare const RecoveryTokenSchema: import("mongoose").Schema<RecoveryToken, import("mongoose").Model<RecoveryToken, any, any, any, import("mongoose").Document<unknown, any, RecoveryToken> & RecoveryToken & {
+    _id: import("mongoose").Types.ObjectId;
+}, any>, {}, {}, {}, {}, import("mongoose").DefaultSchemaOptions, RecoveryToken, import("mongoose").Document<unknown, {}, import("mongoose").FlatRecord<RecoveryToken>> & import("mongoose").FlatRecord<RecoveryToken> & {
+    _id: import("mongoose").Types.ObjectId;
+}>;

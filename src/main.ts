@@ -6,11 +6,10 @@ import * as bodyParser from 'body-parser';
 import { ValidationPipe } from '@nestjs/common';
 import { ENV, ENV_MAPPINGS } from './types';
 
-export let envFilePath = '.env.prod';
+const nodeEnv: ENV = ENV.PROD;
+export const envFilePath = ENV_MAPPINGS[nodeEnv];
 
 async function bootstrap() {
-  const nodeEnv: ENV = ENV.PROD;
-  envFilePath = ENV_MAPPINGS[nodeEnv];
   const port = 8080;
 
   console.log(

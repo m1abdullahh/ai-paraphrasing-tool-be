@@ -15,6 +15,7 @@ const jwt_1 = require("@nestjs/jwt");
 const mongoose_1 = require("@nestjs/mongoose");
 const User_1 = require("./models/User");
 const email_service_1 = require("./services/email.service");
+const RecoveryToken_1 = require("./models/RecoveryToken");
 let AuthModule = class AuthModule {
 };
 exports.AuthModule = AuthModule;
@@ -26,6 +27,11 @@ exports.AuthModule = AuthModule = __decorate([
                     name: User_1.User.name,
                     schema: User_1.UserSchema,
                     collection: 'Users',
+                },
+                {
+                    name: RecoveryToken_1.RecoveryToken.name,
+                    schema: RecoveryToken_1.RecoveryTokenSchema,
+                    collection: 'Recovery Tokens',
                 },
             ]),
             jwt_1.JwtModule.register({

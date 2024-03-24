@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SignInDTO = exports.RegisterDTO = void 0;
+exports.NewPasswordDTO = exports.ConfirmAccountRecoveryTokenDTO = exports.AccountRecoveryDTO = exports.SignInDTO = exports.RegisterDTO = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
 class RegisterDTO {
@@ -69,4 +69,34 @@ __decorate([
     }),
     __metadata("design:type", String)
 ], SignInDTO.prototype, "password", void 0);
+class AccountRecoveryDTO {
+}
+exports.AccountRecoveryDTO = AccountRecoveryDTO;
+__decorate([
+    (0, swagger_1.ApiProperty)({ type: String, required: true }),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], AccountRecoveryDTO.prototype, "email", void 0);
+class ConfirmAccountRecoveryTokenDTO extends AccountRecoveryDTO {
+}
+exports.ConfirmAccountRecoveryTokenDTO = ConfirmAccountRecoveryTokenDTO;
+__decorate([
+    (0, swagger_1.ApiProperty)({ type: String, required: true }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(6),
+    __metadata("design:type", String)
+], ConfirmAccountRecoveryTokenDTO.prototype, "token", void 0);
+class NewPasswordDTO {
+}
+exports.NewPasswordDTO = NewPasswordDTO;
+__decorate([
+    (0, swagger_1.ApiProperty)({ type: String, required: true }),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], NewPasswordDTO.prototype, "code", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({ type: String, required: true }),
+    (0, class_validator_1.IsStrongPassword)(),
+    __metadata("design:type", String)
+], NewPasswordDTO.prototype, "newPassword", void 0);
 //# sourceMappingURL=auth.dto.js.map

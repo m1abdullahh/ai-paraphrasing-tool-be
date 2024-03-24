@@ -2,9 +2,16 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { InjectModel } from '@nestjs/mongoose';
 import { UserDocument } from 'src/auth/models/User';
-import { getEmailTemplate } from 'src/shared/utils';
+import {
+  generateRandomOTP,
+  getEmailTemplate,
+  getRecoveryEmailTemplate,
+} from 'src/shared/utils';
 import { EmailType } from 'src/types';
+import { RecoveryToken, TokenStatus } from '../models/RecoveryToken';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class EmailService {
@@ -12,6 +19,8 @@ export class EmailService {
     private readonly mailerService: MailerService,
     private readonly configService: ConfigService,
     private readonly JWTService: JwtService,
+    @InjectModel(RecoveryToken.name)
+    private readonly recoveryTokenModel: Model<RecoveryToken>,
   ) {}
 
   async sendVerificationEmail(user: UserDocument): Promise<boolean> {
@@ -54,5 +63,63 @@ export class EmailService {
     } catch (e) {
       return false;
     }
+  }
+
+  async sendAccountRecoveryEmail(email: string, name: string) {
+    const token = generateRandomOTP(6);
+
+    // Delete previous email recovery token instances for this email
+    await this.recoveryTokenModel.deleteMany({
+      email,
+      status: TokenStatus.FRESH,
+    });
+
+    await this.recoveryTokenModel.create({
+      email: email,
+      status: TokenStatus.FRESH,
+      token: token,
+    });
+
+    await this.mailerService.sendMail({
+      from: 'Abdullah K. <akjee204@gmail.com>',
+      sender: 'Account Recovery for Proposal Generator',
+      to: email,
+      subject: 'ABServes Inc. - Recover your account',
+      html: getRecoveryEmailTemplate(name, token, '10 minutes'),
+    });
+  }
+
+  async confirmRecoveryCode(
+    email: string,
+    token: string,
+  ): Promise<{ match: boolean; code?: string }> {
+    const tokenInstance = await this.recoveryTokenModel
+      .findOne({
+        email,
+        status: TokenStatus.FRESH,
+      })
+      .exec();
+    if (tokenInstance.token === token) {
+      const code = await this.JWTService.signAsync(
+        { email },
+        {
+          secret: this.configService.get<string>('JWT_SECRET'),
+          expiresIn: '30m',
+        },
+      );
+      await this.recoveryTokenModel.findByIdAndUpdate(tokenInstance.id, {
+        status: TokenStatus.CODE_GENERATED,
+        code,
+      });
+      return { match: true, code };
+    }
+    return { match: false };
+  }
+
+  async expireRecoveryCode(email: string, code: string) {
+    await this.recoveryTokenModel.findOneAndUpdate(
+      { email, code },
+      { status: TokenStatus.EXPIRED },
+    );
   }
 }

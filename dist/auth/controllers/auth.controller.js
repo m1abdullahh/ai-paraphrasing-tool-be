@@ -86,6 +86,45 @@ let AuthController = class AuthController {
         }
         throw new common_1.BadRequestException('Invalid code.');
     }
+    async handleAccountRecovery(data) {
+        const email = data.email;
+        const account = await this.authService.findOne(email);
+        if (!account) {
+            throw new common_1.BadRequestException('No account is registered with this email.');
+        }
+        try {
+            await this.emailService.sendAccountRecoveryEmail(email, account.fullName);
+            return { message: 'OTP sent for email verification.' };
+        }
+        catch (e) {
+            throw new common_1.InternalServerErrorException(e.message || 'Something went wrong.');
+        }
+    }
+    async confirmAccountRecoveryToken(data) {
+        const { email, token } = data;
+        try {
+            const tokenValidity = await this.emailService.confirmRecoveryCode(email, token);
+            if (tokenValidity.match) {
+                return { message: 'OTP matched.', code: tokenValidity.code };
+            }
+            throw new common_1.BadRequestException('OTP mismatch.');
+        }
+        catch (e) {
+            throw new common_1.InternalServerErrorException(e.message || 'Something went wrong.');
+        }
+    }
+    async resetPassword(data) {
+        const { code, newPassword } = data;
+        try {
+            const payload = await this.jwtService.verifyAsync(code, { secret: this.configService.get('JWT_SECRET') });
+            await this.emailService.expireRecoveryCode(payload.email, code);
+            await this.authService.changePassword(payload.email, newPassword);
+            return { message: 'Password changed successfully.' };
+        }
+        catch (e) {
+            throw new common_1.InternalServerErrorException(e.message || 'Something went wrong.');
+        }
+    }
 };
 exports.AuthController = AuthController;
 __decorate([
@@ -136,6 +175,45 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "confirmCode", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Account Recovery',
+        description: 'Request for OTP in case of account recovery.',
+    }),
+    (0, swagger_1.ApiBody)({ type: auth_dto_1.AccountRecoveryDTO, required: true }),
+    (0, Public_1.Public)(),
+    (0, common_1.Post)('account-recovery'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.AccountRecoveryDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "handleAccountRecovery", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Account Recovery Step 2',
+        description: 'Confirm the OTP with the email.',
+    }),
+    (0, swagger_1.ApiBody)({ type: auth_dto_1.ConfirmAccountRecoveryTokenDTO, required: true }),
+    (0, Public_1.Public)(),
+    (0, common_1.Post)('account-recovery/confirm'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.ConfirmAccountRecoveryTokenDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "confirmAccountRecoveryToken", null);
+__decorate([
+    (0, swagger_1.ApiOperation)({
+        summary: 'Account Recovery Step 3',
+        description: 'Final Step: Send new Password with Code recieved from Step 2.',
+    }),
+    (0, swagger_1.ApiBody)({ type: auth_dto_1.NewPasswordDTO, required: true }),
+    (0, Public_1.Public)(),
+    (0, common_1.Post)('reset-password'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [auth_dto_1.NewPasswordDTO]),
+    __metadata("design:returntype", Promise)
+], AuthController.prototype, "resetPassword", null);
 exports.AuthController = AuthController = __decorate([
     (0, swagger_1.ApiBearerAuth)('JWT-auth'),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),

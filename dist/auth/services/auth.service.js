@@ -70,6 +70,10 @@ let AuthService = class AuthService {
             emailVerified: status,
         });
     }
+    async changePassword(email, newPassword) {
+        const hashedPassword = (0, bcrypt_1.hashSync)(newPassword, 10);
+        await this.userModel.findOneAndUpdate({ email }, { password: hashedPassword });
+    }
 };
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([

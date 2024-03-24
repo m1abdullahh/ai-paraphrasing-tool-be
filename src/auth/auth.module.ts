@@ -6,6 +6,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { User, UserSchema } from './models/User';
 import { EmailService } from './services/email.service';
+import { RecoveryToken, RecoveryTokenSchema } from './models/RecoveryToken';
 
 @Module({
   imports: [
@@ -14,6 +15,11 @@ import { EmailService } from './services/email.service';
         name: User.name,
         schema: UserSchema,
         collection: 'Users',
+      },
+      {
+        name: RecoveryToken.name,
+        schema: RecoveryTokenSchema,
+        collection: 'Recovery Tokens',
       },
     ]),
     JwtModule.register({

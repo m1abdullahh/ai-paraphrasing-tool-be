@@ -1,1 +1,1 @@
-export declare let envFilePath: string;
+export declare const envFilePath: string;

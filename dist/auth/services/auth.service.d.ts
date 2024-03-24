@@ -44,4 +44,5 @@ export declare class AuthService {
     changeCredits(userId: string, change: number): Promise<void>;
     getGoogleAuthURL(): string;
     setEmailVerifiedStatus(id: string, status: boolean): Promise<void>;
+    changePassword(email: string, newPassword: string): Promise<void>;
 }

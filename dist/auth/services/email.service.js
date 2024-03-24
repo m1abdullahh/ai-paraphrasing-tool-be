@@ -8,19 +8,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const mailer_1 = require("@nestjs-modules/mailer");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
+const mongoose_1 = require("@nestjs/mongoose");
 const utils_1 = require("../../shared/utils");
 const types_1 = require("../../types");
+const RecoveryToken_1 = require("../models/RecoveryToken");
+const mongoose_2 = require("mongoose");
 let EmailService = class EmailService {
-    constructor(mailerService, configService, JWTService) {
+    constructor(mailerService, configService, JWTService, recoveryTokenModel) {
         this.mailerService = mailerService;
         this.configService = configService;
         this.JWTService = JWTService;
+        this.recoveryTokenModel = recoveryTokenModel;
     }
     async sendVerificationEmail(user) {
         const expiry = this.configService.get('JWT_EXPIRES_IN');
@@ -53,12 +60,56 @@ let EmailService = class EmailService {
             return false;
         }
     }
+    async sendAccountRecoveryEmail(email, name) {
+        const token = (0, utils_1.generateRandomOTP)(6);
+        await this.recoveryTokenModel.deleteMany({
+            email,
+            status: RecoveryToken_1.TokenStatus.FRESH,
+        });
+        await this.recoveryTokenModel.create({
+            email: email,
+            status: RecoveryToken_1.TokenStatus.FRESH,
+            token: token,
+        });
+        await this.mailerService.sendMail({
+            from: 'Abdullah K. <akjee204@gmail.com>',
+            sender: 'Account Recovery for Proposal Generator',
+            to: email,
+            subject: 'ABServes Inc. - Recover your account',
+            html: (0, utils_1.getRecoveryEmailTemplate)(name, token, '10 minutes'),
+        });
+    }
+    async confirmRecoveryCode(email, token) {
+        const tokenInstance = await this.recoveryTokenModel
+            .findOne({
+            email,
+            status: RecoveryToken_1.TokenStatus.FRESH,
+        })
+            .exec();
+        if (tokenInstance.token === token) {
+            const code = await this.JWTService.signAsync({ email }, {
+                secret: this.configService.get('JWT_SECRET'),
+                expiresIn: '30m',
+            });
+            await this.recoveryTokenModel.findByIdAndUpdate(tokenInstance.id, {
+                status: RecoveryToken_1.TokenStatus.CODE_GENERATED,
+                code,
+            });
+            return { match: true, code };
+        }
+        return { match: false };
+    }
+    async expireRecoveryCode(email, code) {
+        await this.recoveryTokenModel.findOneAndUpdate({ email, code }, { status: RecoveryToken_1.TokenStatus.EXPIRED });
+    }
 };
 exports.EmailService = EmailService;
 exports.EmailService = EmailService = __decorate([
     (0, common_1.Injectable)(),
+    __param(3, (0, mongoose_1.InjectModel)(RecoveryToken_1.RecoveryToken.name)),
     __metadata("design:paramtypes", [mailer_1.MailerService,
         config_1.ConfigService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        mongoose_2.Model])
 ], EmailService);
 //# sourceMappingURL=email.service.js.map

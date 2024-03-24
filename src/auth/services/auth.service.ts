@@ -69,4 +69,12 @@ export class AuthService {
       emailVerified: status,
     });
   }
+
+  async changePassword(email: string, newPassword: string) {
+    const hashedPassword = hashSync(newPassword, 10);
+    await this.userModel.findOneAndUpdate(
+      { email },
+      { password: hashedPassword },
+    );
+  }
 }

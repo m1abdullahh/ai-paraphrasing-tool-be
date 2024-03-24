@@ -4,6 +4,7 @@ import {
   IsNotEmpty,
   IsString,
   IsStrongPassword,
+  MinLength,
 } from 'class-validator';
 
 export class RegisterDTO {
@@ -55,4 +56,27 @@ export class SignInDTO {
     },
   )
   password: string;
+}
+
+export class AccountRecoveryDTO {
+  @ApiProperty({ type: String, required: true })
+  @IsEmail()
+  email: string;
+}
+
+export class ConfirmAccountRecoveryTokenDTO extends AccountRecoveryDTO {
+  @ApiProperty({ type: String, required: true })
+  @IsString()
+  @MinLength(6)
+  token: string;
+}
+
+export class NewPasswordDTO {
+  @ApiProperty({ type: String, required: true })
+  @IsString()
+  code: string;
+
+  @ApiProperty({ type: String, required: true })
+  @IsStrongPassword()
+  newPassword: string;
 }

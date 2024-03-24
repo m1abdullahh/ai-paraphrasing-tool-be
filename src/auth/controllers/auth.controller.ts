@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  InternalServerErrorException,
   NotFoundException,
   Post,
   Query,
@@ -11,7 +12,13 @@ import {
   UnauthorizedException,
   UseGuards,
 } from '@nestjs/common';
-import { SignInDTO, RegisterDTO } from '../dto/auth.dto';
+import {
+  SignInDTO,
+  RegisterDTO,
+  AccountRecoveryDTO,
+  ConfirmAccountRecoveryTokenDTO,
+  NewPasswordDTO,
+} from '../dto/auth.dto';
 import { AuthService } from '../services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
@@ -127,5 +134,81 @@ export class AuthController {
       );
     }
     throw new BadRequestException('Invalid code.');
+  }
+
+  @ApiOperation({
+    summary: 'Account Recovery',
+    description: 'Request for OTP in case of account recovery.',
+  })
+  @ApiBody({ type: AccountRecoveryDTO, required: true })
+  @Public()
+  @Post('account-recovery')
+  async handleAccountRecovery(@Body() data: AccountRecoveryDTO) {
+    const email = data.email;
+    const account = await this.authService.findOne(email);
+    if (!account) {
+      throw new BadRequestException(
+        'No account is registered with this email.',
+      );
+    }
+    try {
+      await this.emailService.sendAccountRecoveryEmail(email, account.fullName);
+      return { message: 'OTP sent for email verification.' };
+    } catch (e) {
+      throw new InternalServerErrorException(
+        e.message || 'Something went wrong.',
+      );
+    }
+  }
+
+  @ApiOperation({
+    summary: 'Account Recovery Step 2',
+    description: 'Confirm the OTP with the email.',
+  })
+  @ApiBody({ type: ConfirmAccountRecoveryTokenDTO, required: true })
+  @Public()
+  @Post('account-recovery/confirm')
+  async confirmAccountRecoveryToken(
+    @Body() data: ConfirmAccountRecoveryTokenDTO,
+  ) {
+    const { email, token } = data;
+    try {
+      const tokenValidity = await this.emailService.confirmRecoveryCode(
+        email,
+        token,
+      );
+      if (tokenValidity.match) {
+        return { message: 'OTP matched.', code: tokenValidity.code };
+      }
+      throw new BadRequestException('OTP mismatch.');
+    } catch (e) {
+      throw new InternalServerErrorException(
+        e.message || 'Something went wrong.',
+      );
+    }
+  }
+  @ApiOperation({
+    summary: 'Account Recovery Step 3',
+    description:
+      'Final Step: Send new Password with Code recieved from Step 2.',
+  })
+  @ApiBody({ type: NewPasswordDTO, required: true })
+  @Public()
+  @Post('reset-password')
+  async resetPassword(@Body() data: NewPasswordDTO) {
+    const { code, newPassword } = data;
+    try {
+      const payload = await this.jwtService.verifyAsync<{ email: string }>(
+        code,
+        { secret: this.configService.get<string>('JWT_SECRET') },
+      );
+      await this.emailService.expireRecoveryCode(payload.email, code);
+      await this.authService.changePassword(payload.email, newPassword);
+      return { message: 'Password changed successfully.' };
+    } catch (e) {
+      throw new InternalServerErrorException(
+        e.message || 'Something went wrong.',
+      );
+    }
   }
 }

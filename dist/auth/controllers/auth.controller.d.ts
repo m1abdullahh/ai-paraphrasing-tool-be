@@ -23,7 +23,7 @@
 /// <reference types="mongoose/types/virtuals" />
 /// <reference types="mongoose" />
 /// <reference types="mongoose/types/inferschematype" />
-import { SignInDTO, RegisterDTO } from '../dto/auth.dto';
+import { SignInDTO, RegisterDTO, AccountRecoveryDTO, ConfirmAccountRecoveryTokenDTO, NewPasswordDTO } from '../dto/auth.dto';
 import { AuthService } from '../services/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
@@ -51,4 +51,14 @@ export declare class AuthController {
     }>;
     handleGetAuthUrl(res: Response): void;
     confirmCode(code: string, res: Response): Promise<void>;
+    handleAccountRecovery(data: AccountRecoveryDTO): Promise<{
+        message: string;
+    }>;
+    confirmAccountRecoveryToken(data: ConfirmAccountRecoveryTokenDTO): Promise<{
+        message: string;
+        code: string;
+    }>;
+    resetPassword(data: NewPasswordDTO): Promise<{
+        message: string;
+    }>;
 }

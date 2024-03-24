@@ -8,3 +8,5 @@ export declare function getEmailVariables(emailType: EmailType): {
     mainButtonText: string;
 };
 export declare function getEmailTemplate(name: string, token: string, expiry: string, emailType: EmailType): string;
+export declare function getRecoveryEmailTemplate(name: string, otp: string, expiry: string): string;
+export declare const generateRandomOTP: (numCount: number) => string;
