@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetCompletionDTO = void 0;
 const swagger_1 = require("@nestjs/swagger");
 const class_validator_1 = require("class-validator");
+const types_1 = require("../../types");
 class GetCompletionDTO {
 }
 exports.GetCompletionDTO = GetCompletionDTO;
@@ -38,4 +39,15 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], GetCompletionDTO.prototype, "additionalPrompt", void 0);
+__decorate([
+    (0, swagger_1.ApiProperty)({
+        type: String,
+        required: true,
+        enum: types_1.GeneratorModel,
+        default: types_1.GeneratorModel.GPT_4,
+    }),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)(),
+    __metadata("design:type", String)
+], GetCompletionDTO.prototype, "model", void 0);
 //# sourceMappingURL=generator.dto.js.map

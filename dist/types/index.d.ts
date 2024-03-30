@@ -13,3 +13,7 @@ export declare enum EmailType {
     ACTIVATION = "activation",
     PASSWORD_RESET = "password-reset"
 }
+export declare enum GeneratorModel {
+    GPT_4 = "CHATGPT_4",
+    CLAUDE_3 = "CLAUDE_3"
+}

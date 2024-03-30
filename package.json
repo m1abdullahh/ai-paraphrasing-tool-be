@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.17.2",
-    "@azure/openai": "^1.0.0-beta.8",
+    "@azure/openai": "^1.0.0-beta.11",
     "@nestjs-modules/mailer": "^1.11.2",
     "@nestjs/axios": "^3.0.2",
     "@nestjs/cli": "^10.0.0",

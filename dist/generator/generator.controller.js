@@ -20,6 +20,7 @@ const ResponseMappings_1 = require("../shared/utils/ResponseMappings");
 const swagger_1 = require("@nestjs/swagger");
 const utils_1 = require("../shared/utils");
 const auth_guard_1 = require("../auth/guards/auth.guard");
+const types_1 = require("../types");
 let GeneratorController = class GeneratorController {
     constructor(generatorService, responseMappings) {
         this.generatorService = generatorService;
@@ -32,11 +33,11 @@ let GeneratorController = class GeneratorController {
         try {
             const { jobDescription, name, experience, additionalPrompt } = prompt;
             const AIPrompt = (0, utils_1.generateProposalPrompt)(jobDescription, name, experience, additionalPrompt);
-            const completion = await this.generatorService.getCompletion(AIPrompt, req.user.id, jobDescription);
+            const completion = await this.generatorService.getCompletion(AIPrompt, req.user.id, jobDescription, types_1.GeneratorModel.GPT_4);
             return this.responseMappings.getSuccessResponse(completion);
         }
         catch (e) {
-            return this.responseMappings.getErrorResponse(e.messages || 'Something went wrong.');
+            return this.responseMappings.getErrorResponse(e.message || 'Something went wrong.');
         }
     }
 };
