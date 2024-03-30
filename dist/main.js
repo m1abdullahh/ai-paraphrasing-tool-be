@@ -8,7 +8,7 @@ const swagger_1 = require("@nestjs/swagger");
 const bodyParser = require("body-parser");
 const common_1 = require("@nestjs/common");
 const types_1 = require("./types");
-const nodeEnv = types_1.ENV.DEV;
+const nodeEnv = types_1.ENV.PROD;
 exports.envFilePath = types_1.ENV_MAPPINGS[nodeEnv];
 async function bootstrap() {
     const port = 8080;
