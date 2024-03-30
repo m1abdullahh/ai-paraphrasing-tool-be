@@ -19,7 +19,7 @@ var EmailType;
 })(EmailType || (exports.EmailType = EmailType = {}));
 var GeneratorModel;
 (function (GeneratorModel) {
-    GeneratorModel["GPT_4"] = "CHATGPT_4";
+    GeneratorModel["GPT_4"] = "GPT_4";
     GeneratorModel["CLAUDE_3"] = "CLAUDE_3";
 })(GeneratorModel || (exports.GeneratorModel = GeneratorModel = {}));
 //# sourceMappingURL=index.js.map

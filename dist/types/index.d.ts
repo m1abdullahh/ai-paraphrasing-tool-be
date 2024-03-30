@@ -14,6 +14,6 @@ export declare enum EmailType {
     PASSWORD_RESET = "password-reset"
 }
 export declare enum GeneratorModel {
-    GPT_4 = "CHATGPT_4",
+    GPT_4 = "GPT_4",
     CLAUDE_3 = "CLAUDE_3"
 }
