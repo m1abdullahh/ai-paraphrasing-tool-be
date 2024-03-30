@@ -27,6 +27,7 @@ let PromptService = class PromptService {
                 completion: data.completion,
                 prompt: data.prompt,
                 user: data.user,
+                model: data.model,
             });
         }
         catch (e) {

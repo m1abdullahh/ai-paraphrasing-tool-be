@@ -12,7 +12,7 @@ import { ResponseMappings } from 'src/shared/utils/ResponseMappings';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { generateProposalPrompt } from 'src/shared/utils';
 import { AuthGuard } from 'src/auth/guards/auth.guard';
-import { ExtendedRequest, GeneratorModel } from 'src/types';
+import { ExtendedRequest } from 'src/types';
 
 @UseGuards(AuthGuard)
 @ApiTags('Generator')
@@ -48,7 +48,7 @@ export class GeneratorController {
         AIPrompt,
         req.user.id,
         jobDescription,
-        GeneratorModel.GPT_4,
+        prompt.model,
       );
       return this.responseMappings.getSuccessResponse(completion);
     } catch (e) {

@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from 'src/auth/models/User';
+import { GeneratorModel } from 'src/types';
 
 export type PromptDocument = HydratedDocument<Prompt>;
 
@@ -19,6 +20,8 @@ export class Prompt {
   prompt: string;
   @Prop({ type: String, required: true })
   completion: string;
+  @Prop({ type: String, required: true })
+  model: GeneratorModel;
 }
 
 export const PromptSchema = SchemaFactory.createForClass(Prompt);

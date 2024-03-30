@@ -47,7 +47,6 @@ __decorate([
         default: types_1.GeneratorModel.GPT_4,
     }),
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)(),
     __metadata("design:type", String)
 ], GetCompletionDTO.prototype, "model", void 0);
 //# sourceMappingURL=generator.dto.js.map

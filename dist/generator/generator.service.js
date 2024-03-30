@@ -38,11 +38,6 @@ let GeneratorService = class GeneratorService {
                 model: 'claude-3-opus-20240229',
             });
             returnText = completion.content[0].text;
-            this.promptService.addPrompt({
-                prompt: originalPrompt,
-                completion: returnText,
-                user: userId,
-            });
         }
         else {
             const completion = await this.openAi.getChatCompletions('xyz', [
@@ -55,7 +50,15 @@ let GeneratorService = class GeneratorService {
         }
         const wordCount = (0, utils_1.countWords)(returnText);
         const generationCost = wordCount / types_1.WORDS_PER_CREDIT;
-        this.authService.changeCredits(userId, ~~-generationCost);
+        Promise.all([
+            this.promptService.addPrompt({
+                prompt: originalPrompt,
+                completion: returnText,
+                user: userId,
+                model: service,
+            }),
+            this.authService.changeCredits(userId, ~~-generationCost),
+        ]);
         return returnText;
     }
 };

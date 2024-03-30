@@ -13,6 +13,7 @@ exports.PromptSchema = exports.Prompt = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const User_1 = require("../../auth/models/User");
+const types_1 = require("../../types");
 let Prompt = class Prompt {
 };
 exports.Prompt = Prompt;
@@ -35,6 +36,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
 ], Prompt.prototype, "completion", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: String, required: true }),
+    __metadata("design:type", String)
+], Prompt.prototype, "model", void 0);
 exports.Prompt = Prompt = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Prompt);

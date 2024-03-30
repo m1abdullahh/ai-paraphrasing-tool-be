@@ -24,11 +24,13 @@
 /// <reference types="mongoose/types/inferschematype" />
 import mongoose, { HydratedDocument } from 'mongoose';
 import { User } from 'src/auth/models/User';
+import { GeneratorModel } from 'src/types';
 export type PromptDocument = HydratedDocument<Prompt>;
 export declare class Prompt {
     user: User;
     prompt: string;
     completion: string;
+    model: GeneratorModel;
 }
 export declare const PromptSchema: mongoose.Schema<Prompt, mongoose.Model<Prompt, any, any, any, mongoose.Document<unknown, any, Prompt> & Prompt & {
     _id: mongoose.Types.ObjectId;

@@ -42,11 +42,6 @@ export class GeneratorService {
         model: 'claude-3-opus-20240229',
       });
       returnText = completion.content[0].text;
-      this.promptService.addPrompt({
-        prompt: originalPrompt,
-        completion: returnText,
-        user: userId,
-      });
     } else {
       const completion = await this.openAi.getChatCompletions('xyz', [
         {
@@ -56,10 +51,19 @@ export class GeneratorService {
       ]);
       returnText = completion.choices[0].message.content;
     }
+
     const wordCount = countWords(returnText);
     const generationCost = wordCount / WORDS_PER_CREDIT;
 
-    this.authService.changeCredits(userId, ~~-generationCost);
+    Promise.all([
+      this.promptService.addPrompt({
+        prompt: originalPrompt,
+        completion: returnText,
+        user: userId,
+        model: service,
+      }),
+      this.authService.changeCredits(userId, ~~-generationCost),
+    ]);
     return returnText;
   }
 }
