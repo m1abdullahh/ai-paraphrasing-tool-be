@@ -29,6 +29,5 @@ export class GetCompletionDTO {
     default: GeneratorModel.GPT_4,
   })
   @IsString()
-  @IsNotEmpty()
   model: GeneratorModel;
 }
