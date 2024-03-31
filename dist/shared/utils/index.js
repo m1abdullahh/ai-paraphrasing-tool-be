@@ -11,8 +11,10 @@ function generateProposalPrompt(jobDescription, name, optionalExperience, additi
     if (additionalPrompt && additionalPrompt !== '') {
         prompt += `**Additional Prompts:**\n ${additionalPrompt}`;
     }
-    prompt += `\n\n**Please generate the proposal for the provided job description. Focus only on the text generation and do not include any additional information. If you find the name of the employer in the job description, such as in the end, then start the proposal with greetings and his name. And use ${name} as the name of the freelancer who's applying. Use it where it'd give of a good feeling to use.**`;
+    prompt += `\n\n**Please generate an appealing proposal for the provided job description. Focus only on the text generation and do not include any additional information. If you find the name of the employer in the job description, such as in the end, then start the proposal with greetings and his name. And use ${name} as the name of the freelancer who's applying. Use it where it'd give of a good feeling to use.**`;
+    prompt += `\n\n Try to include why I could be proven a good candidate and how can I contribute to achieve the best results.`;
     prompt += `\n\n **Try not to include lines like: \n "I am writing to express my strong interest in..."\n in the start. Don't add lines like these in the first or second line of the proposal. Also avoid lines like: \n "Thank you for considering my application.." in the ending lines of the proposal. Instead, try to be creative and attract the employer by describing how you and your skills can help them in this project. Also try to avoid wording like "Dear Hiring manager", start with something like "Hi dear", or "Hello dear" or something similar.`;
+    prompt += `\n\n If the job description contains info about any tools that the job needs experience with or promotes to use, try to add experience with those tools, plus, try to add additional tools, similar to the ones mentioned, that could be used in the job, while making sure to only mention tools that are relevant to the ones mentioned and can be used with the job.`;
     return prompt;
 }
 exports.generateProposalPrompt = generateProposalPrompt;
