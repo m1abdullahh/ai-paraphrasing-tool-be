@@ -17,6 +17,7 @@ export class PromptService {
         prompt: data.prompt,
         user: data.user,
         model: data.model,
+        cost: data.cost,
       });
     } catch (e) {
       throw new InternalServerErrorException(

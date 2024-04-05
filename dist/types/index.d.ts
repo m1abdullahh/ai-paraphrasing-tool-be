@@ -1,3 +1,4 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { UserDocument } from 'src/auth/models/User';
 export interface ExtendedRequest extends Request {
     user: UserDocument;
@@ -16,4 +17,7 @@ export declare enum EmailType {
 export declare enum GeneratorModel {
     GPT_4 = "GPT_4",
     CLAUDE_3 = "CLAUDE_3"
+}
+export declare class TooManyRequestsException extends HttpException {
+    constructor(response?: string, status?: HttpStatus);
 }

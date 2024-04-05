@@ -40,6 +40,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: String, required: true }),
     __metadata("design:type", String)
 ], Prompt.prototype, "model", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, required: true }),
+    __metadata("design:type", Number)
+], Prompt.prototype, "cost", void 0);
 exports.Prompt = Prompt = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Prompt);

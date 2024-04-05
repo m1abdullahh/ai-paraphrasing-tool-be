@@ -13,60 +13,42 @@ exports.GeneratorService = void 0;
 const sdk_1 = require("@anthropic-ai/sdk");
 const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
-const auth_service_1 = require("../auth/services/auth.service");
-const prompt_service_1 = require("../prompt/prompt.service");
-const utils_1 = require("../shared/utils");
 const types_1 = require("../types");
 const openai_1 = require("@azure/openai");
 let GeneratorService = class GeneratorService {
-    constructor(configService, promptService, authService) {
+    constructor(configService) {
         this.configService = configService;
-        this.promptService = promptService;
-        this.authService = authService;
         this.anthropicAi = new sdk_1.default({
             apiKey: this.configService.get('ANTHROPY_KEY'),
         });
         const credentials = new openai_1.AzureKeyCredential(this.configService.get('GPT4_OPENAPI_KEY'));
-        this.openAi = new openai_1.OpenAIClient('https://asjndja2.openai.azure.com/', credentials);
+        this.openAi = new openai_1.OpenAIClient('https://asjndja2.openai.azure.com/', credentials, {});
     }
     async getCompletion(content, userId, originalPrompt, service) {
-        let returnText;
+        let textStream;
         if (service === types_1.GeneratorModel.CLAUDE_3) {
-            const completion = await this.anthropicAi.messages.create({
+            const completion = this.anthropicAi.messages.stream({
                 max_tokens: 1024,
                 messages: [{ content, role: 'user' }],
                 model: 'claude-3-opus-20240229',
             });
-            returnText = completion.content[0].text;
+            textStream = completion;
         }
         else {
-            const completion = await this.openAi.getChatCompletions('xyz', [
+            const completion = await this.openAi.streamChatCompletions('xyz', [
                 {
                     role: 'user',
                     content,
                 },
             ]);
-            returnText = completion.choices[0].message.content;
+            textStream = completion;
         }
-        const wordCount = (0, utils_1.countWords)(returnText);
-        const generationCost = wordCount / types_1.WORDS_PER_CREDIT;
-        Promise.all([
-            this.promptService.addPrompt({
-                prompt: originalPrompt,
-                completion: returnText,
-                user: userId,
-                model: service,
-            }),
-            this.authService.changeCredits(userId, ~~-generationCost),
-        ]);
-        return returnText;
+        return textStream;
     }
 };
 exports.GeneratorService = GeneratorService;
 exports.GeneratorService = GeneratorService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [config_1.ConfigService,
-        prompt_service_1.PromptService,
-        auth_service_1.AuthService])
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], GeneratorService);
 //# sourceMappingURL=generator.service.js.map

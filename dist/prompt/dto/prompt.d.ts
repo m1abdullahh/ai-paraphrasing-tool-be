@@ -4,4 +4,5 @@ export type AddPromptDTO = {
     prompt: string;
     completion: string;
     model: GeneratorModel;
+    cost: number;
 };

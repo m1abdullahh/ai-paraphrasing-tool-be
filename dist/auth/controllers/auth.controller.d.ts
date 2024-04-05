@@ -46,9 +46,7 @@ export declare class AuthController {
             _id: import("mongoose").Types.ObjectId;
         };
     }>;
-    handleGetProfile(req: ExtendedRequest): Promise<import("mongoose").Document<unknown, {}, import("src/auth/models/User").User> & import("src/auth/models/User").User & {
-        _id: import("mongoose").Types.ObjectId;
-    }>;
+    handleGetProfile(req: ExtendedRequest): Promise<any>;
     handleGetAuthUrl(res: Response): void;
     confirmCode(code: string, res: Response): Promise<void>;
     handleAccountRecovery(data: AccountRecoveryDTO): Promise<{

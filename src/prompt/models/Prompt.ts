@@ -22,6 +22,8 @@ export class Prompt {
   completion: string;
   @Prop({ type: String, required: true })
   model: GeneratorModel;
+  @Prop({ type: Number, required: true })
+  cost: number;
 }
 
 export const PromptSchema = SchemaFactory.createForClass(Prompt);

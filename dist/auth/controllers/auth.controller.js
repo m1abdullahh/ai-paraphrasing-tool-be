@@ -73,7 +73,10 @@ let AuthController = class AuthController {
         throw new common_1.BadRequestException('Invalid Password.');
     }
     async handleGetProfile(req) {
-        return req.user;
+        return {
+            ...req.user['_doc'],
+            promptCredits: Math.max(req.user.promptCredits, 0),
+        };
     }
     handleGetAuthUrl(res) {
         return res.redirect(this.authService.getGoogleAuthURL());

@@ -110,7 +110,10 @@ export class AuthController {
   @ApiOperation({ summary: 'User profile', description: 'Fetch user profile.' })
   @Get('profile')
   async handleGetProfile(@Req() req: ExtendedRequest) {
-    return req.user;
+    return {
+      ...req.user['_doc'],
+      promptCredits: Math.max(req.user.promptCredits, 0),
+    };
   }
 
   @Get('google-auth')

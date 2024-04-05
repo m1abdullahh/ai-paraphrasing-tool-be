@@ -31,6 +31,7 @@ export declare class Prompt {
     prompt: string;
     completion: string;
     model: GeneratorModel;
+    cost: number;
 }
 export declare const PromptSchema: mongoose.Schema<Prompt, mongoose.Model<Prompt, any, any, any, mongoose.Document<unknown, any, Prompt> & Prompt & {
     _id: mongoose.Types.ObjectId;

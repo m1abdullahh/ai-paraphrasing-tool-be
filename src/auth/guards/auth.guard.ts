@@ -30,7 +30,10 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
-      throw new UnauthorizedException();
+      throw new UnauthorizedException(
+        'Unauthorized',
+        "Make sure you're signed in. ",
+      );
     }
     try {
       const data = await this.jwtService.verifyAsync<{
@@ -62,7 +65,7 @@ export class AuthGuard implements CanActivate {
     return true;
   }
 
-  private extractTokenFromHeader(request: Request): any | undefined {
+  private extractTokenFromHeader(request: Request): string | undefined {
     const authHeader = request.headers['authorization'];
     if (!authHeader) {
       return undefined;

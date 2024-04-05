@@ -34,7 +34,7 @@ let AuthGuard = class AuthGuard {
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
         if (!token) {
-            throw new common_1.UnauthorizedException();
+            throw new common_1.UnauthorizedException('Unauthorized', "Make sure you're signed in. ");
         }
         try {
             const data = await this.jwtService.verifyAsync(token, {
