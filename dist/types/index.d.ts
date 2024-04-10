@@ -16,7 +16,8 @@ export declare enum EmailType {
 }
 export declare enum GeneratorModel {
     GPT_4 = "GPT_4",
-    CLAUDE_3 = "CLAUDE_3"
+    CLAUDE_3 = "CLAUDE_3",
+    GEMINI_PRO = "GEMINI_PRO"
 }
 export declare class TooManyRequestsException extends HttpException {
     constructor(response?: string, status?: HttpStatus);

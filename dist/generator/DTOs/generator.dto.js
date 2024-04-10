@@ -44,7 +44,7 @@ __decorate([
         type: String,
         required: true,
         enum: types_1.GeneratorModel,
-        default: types_1.GeneratorModel.GPT_4,
+        default: types_1.GeneratorModel.GEMINI_PRO,
     }),
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

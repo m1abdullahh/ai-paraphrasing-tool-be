@@ -62,6 +62,11 @@ export class GeneratorController {
       responseObservable.subscribe({
         next(value: Record<string, any>) {
           switch (prompt.model) {
+            case GeneratorModel.GEMINI_PRO:
+              const text = value.text();
+              res.write(text);
+              completeRes = completeRes + text;
+              break;
             case GeneratorModel.CLAUDE_3:
               if ((value.type as string).startsWith('content_block_delta')) {
                 res.write(value.delta.text);

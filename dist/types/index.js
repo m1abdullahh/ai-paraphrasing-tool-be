@@ -22,6 +22,7 @@ var GeneratorModel;
 (function (GeneratorModel) {
     GeneratorModel["GPT_4"] = "GPT_4";
     GeneratorModel["CLAUDE_3"] = "CLAUDE_3";
+    GeneratorModel["GEMINI_PRO"] = "GEMINI_PRO";
 })(GeneratorModel || (exports.GeneratorModel = GeneratorModel = {}));
 class TooManyRequestsException extends common_1.HttpException {
     constructor(response = 'Too Many Requests', status = common_1.HttpStatus.TOO_MANY_REQUESTS) {

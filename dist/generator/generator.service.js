@@ -15,18 +15,25 @@ const common_1 = require("@nestjs/common");
 const config_1 = require("@nestjs/config");
 const types_1 = require("../types");
 const openai_1 = require("@azure/openai");
+const generative_ai_1 = require("@google/generative-ai");
 let GeneratorService = class GeneratorService {
     constructor(configService) {
         this.configService = configService;
         this.anthropicAi = new sdk_1.default({
-            apiKey: this.configService.get('ANTHROPY_KEY'),
+            apiKey: this.configService.get('ANTHROPIC_KEY'),
         });
         const credentials = new openai_1.AzureKeyCredential(this.configService.get('GPT4_OPENAPI_KEY'));
         this.openAi = new openai_1.OpenAIClient('https://asjndja2.openai.azure.com/', credentials, {});
+        this.googleAI = new generative_ai_1.GoogleGenerativeAI(this.configService.get('GOOGLE_GEMINI_API_KEY'));
     }
     async getCompletion(content, userId, originalPrompt, service) {
         let textStream;
-        if (service === types_1.GeneratorModel.CLAUDE_3) {
+        if (service === types_1.GeneratorModel.GEMINI_PRO) {
+            const model = this.googleAI.getGenerativeModel({ model: 'gemini-pro' });
+            const completion = await model.generateContentStream(content);
+            textStream = completion.stream;
+        }
+        else if (service === types_1.GeneratorModel.CLAUDE_3) {
             const completion = this.anthropicAi.messages.stream({
                 max_tokens: 1024,
                 messages: [{ content, role: 'user' }],

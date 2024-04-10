@@ -26,7 +26,7 @@ export class GetCompletionDTO {
     type: String,
     required: true,
     enum: GeneratorModel,
-    default: GeneratorModel.GPT_4,
+    default: GeneratorModel.GEMINI_PRO,
   })
   @IsString()
   model: GeneratorModel;
